@@ -1,0 +1,36 @@
+<!-- home.html -->
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Add Bootstrap CDN (Content Delivery Network) links for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    
+    <style>
+        .navlink:hover{
+            border-radius: 10px;
+            text-decoration-color: #68d391;
+        }
+    </style>
+    <nav class="flex items-center justify-between p-4 bg-green-500 text-white">
+        <div class="flex items-center space-x-4">
+            <img src="{% static 'images/dzologo.png' %}" alt="Icon" class="h-11 w-18">
+            <span class="text-xl font-bold">Dzongkha NextWord</span>
+            <a href="home.html" class="navlink text-xl hover:no-underline hover:bg-white hover:text-green-500 hover:border hover:border-green-500 hover:rounded-full hover:h-full p-2">Home</a>
+
+        </div>
+        
+    </nav>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <!-- Add your content for the home page here -->
+        <h1>This page will contain the details of the developers and project and its objectives. or details of the DCDD department</h1>
+    </div>
+</body>
+</html>

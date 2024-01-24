@@ -1,0 +1,327 @@
+<!-- predict.html -->
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Function to handle button click event
+        function handleButtonClick(word) {
+            // Get the current value of the text input
+            var inputElement = $('#text-input');
+            var currentValue = inputElement.val();
+            
+            // Append the clicked word to the current content
+            if (currentValue.slice(-1) === "་"||currentValue.slice(-1) === "།"||currentValue.slice(-1) === "༽"||currentValue.slice(-1) === "༼?"||currentValue.slice(-1) === "༉"||currentValue.slice(-1) === "?") {
+                // Update differently if the last character is "་"
+                inputElement.val(currentValue + (currentValue ? ' ' : '') + word);
+            } else {
+                // Append the clicked word to the current content
+                inputElement.val(currentValue + (currentValue ? '་ ' : '') + word);
+            }
+    
+            // Trigger the input event to update predictions
+            inputElement.trigger('input');
+        }
+        // Function to toggle the keyboard visibility
+        function toggleKeyboard() {
+            var keyboardSection = $('.keyboard-section');
+            keyboardSection.toggle(); // Toggle the visibility of the keyboard
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Word Prediction</title>
+    <!-- Add Bootstrap CDN (Content Delivery Network) links for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    
+    <style>
+        .navlink:hover{
+            border-radius: 10px;
+            text-decoration-color: #68d391;
+        }
+        .share-button:hover {
+            background-color: #ef4444; /* Red background color on hover */
+        }
+
+        .share-button {
+            background-color: #68d391; /* Green background color */
+        }
+        .export-button{
+            background-color: #68d391;
+        }
+        .export-button:hover{
+            background-color: #3b82f6;
+        }
+        .nav{
+            font-size: 20px;
+        }
+        .list-group-item {
+            color: black; /* Set the font color to black */
+        }
+
+        .prediction-button {
+            white-space: nowrap; /* Prevent text wrapping */
+            overflow: hidden;    /* Hide any text that overflows */
+            text-overflow: ellipsis; /* Display an ellipsis (...) to indicate overflow */
+            max-width: 100%; /* Ensure the button doesn't expand beyond its container */
+            margin: 2px; /* Adjust margin as needed */
+            font-size: 20px; /* Adjust the font size as needed */
+        }
+
+        /* Add new class for keyboard sections */
+        .keyboard-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0; /* Adjust margin as needed */
+        }
+
+        /* Add style for kbd elements */
+        .kbd {
+            padding: 0.75rem;
+            border: 1px solid #ffffff;
+            border-radius: 10px;
+            background-color: #000000;
+            font-size: 25px;
+        }
+        .sub{
+            font-size: 35px;
+        }
+    </style>
+    <nav class="flex items-center justify-between p-4 bg-green-500 text-white">
+        <div class="flex items-center space-x-4">
+            <img src="{% static 'images/dzologo.png' %}" alt="Icon" class="h-11 w-18">
+            <span class="text-xl font-bold">Dzongkha NextWord</span>
+            <a href="home.html" class="navlink text-xl hover:no-underline hover:bg-white hover:text-green-500 hover:border hover:border-green-500 hover:rounded-full hover:h-full p-2">Home</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="share-button flex items-center space-x-2 p-2 rounded-lg border border-white focus:outline-none focus:border-white transition transform ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
+                    <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"/>
+                </svg>
+                <span>Share</span>
+            </button>
+            <button onclick="showExportModal()" class="export-button flex items-center space-x-2 p-2 rounded-lg border border-white focus:outline-none focus:border-white transition transform hover:bg-blue-500 bg-green-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                </svg>
+                <span>Export</span>
+            </button>
+        </div>
+    </nav>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+         <!-- Navigation Bar -->
+        
+        <!-- Form for users to type something and get predictions -->
+        <form method="post" action="{% url 'predict' %}" id="prediction-form" class="mb-4">
+            {% csrf_token %}
+            <div class="form-group">
+                <!-- Use a Bootstrap textarea instead of Quill editor -->
+                <textarea id="text-input" class="form-control text-2xl" rows="5" placeholder="Type here..."></textarea>
+            </div>
+        </form>
+        
+        <!-- Display predictions dynamically -->
+
+        <div id="predictions-container" class="btn-group gap-2"></div>
+         <!-- Toggle switch to show/hide the keyboard -->
+         <label class="relative inline-flex items-center cursor-pointer mt-2" onchange="toggleKeyboard()">
+            <input type="checkbox" value="" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Keyboard</span>
+          </label>
+        <!-- Keyboard  -->
+        <div class="keyboard-section">
+            <kbd class="kbd">1 <sub class="sub">༡</sub></kbd>
+            <kbd class="kbd">2 <sub class="sub">༢</sub></kbd>
+            <kbd class="kbd">3 <sub class="sub">༣</sub></kbd>
+            <kbd class="kbd">4 <sub class="sub">༤</sub></kbd>
+            <kbd class="kbd">5 <sub class="sub">༥</sub></kbd>
+            <kbd class="kbd">6 <sub class="sub">༦</sub></kbd>
+            <kbd class="kbd">7 <sub class="sub">༧</sub></kbd>
+            <kbd class="kbd">8 <sub class="sub">༨</sub></kbd>
+            <kbd class="kbd">9 <sub class="sub">༩</sub></kbd>
+            <kbd class="kbd">0 <sub class="sub">༠</sub></kbd>
+            <kbd class="kbd">- <sub class="sub">༔</sub></kbd>
+            <kbd class="kbd">= <sub class="sub">།</sub></kbd>
+        </div>
+        <div class="keyboard-section">
+            <kbd class="kbd">q <sub class="sub">ཀ</sub></kbd>
+            <kbd class="kbd">w <sub class="sub">ཁ</sub></kbd>
+            <kbd class="kbd">e <sub class="sub">ག</sub></kbd>
+            <kbd class="kbd">r <sub class="sub">ང</sub></kbd>
+            <kbd class="kbd">t <sub class="sub">ི</sub></kbd>
+            <kbd class="kbd">y <sub class="sub">ུ</sub></kbd>
+            <kbd class="kbd">u <sub class="sub">ེ</sub></kbd>
+            <kbd class="kbd">i <sub class="sub">ོ</sub></kbd>
+            <kbd class="kbd">o <sub class="sub">ཅ</sub></kbd>
+            <kbd class="kbd">p <sub class="sub">ཆ</sub></kbd>
+            <kbd class="kbd">[ <sub class="sub">ཇ</sub></kbd>
+            <kbd class="kbd">] <sub class="sub">ཉ</sub></kbd>
+        </div>
+        <div class="keyboard-section">
+            <kbd class="kbd">a <sub class="sub">ཏ</sub></kbd>
+            <kbd class="kbd">s <sub class="sub">ཐ</sub></kbd>
+            <kbd class="kbd">d <sub class="sub">ད</sub></kbd>
+            <kbd class="kbd">f <sub class="sub">ན</sub></kbd>
+            <kbd class="kbd">g <sub class="sub">པ</sub></kbd>
+            <kbd class="kbd">h <sub class="sub">ཕ</sub></kbd>
+            <kbd class="kbd">j <sub class="sub">བ</sub></kbd>
+            <kbd class="kbd">k <sub class="sub">མ</sub></kbd>
+            <kbd class="kbd">l <sub class="sub">ཙ</sub></kbd>
+            <kbd class="kbd">; <sub class="sub">ཚ</sub></kbd>
+            <kbd class="kbd">' <sub class="sub">ཛ</sub></kbd>
+            <kbd class="kbd">\ <sub class="sub">ཝ</sub></kbd>
+        </div>
+        <div class="keyboard-section">
+            <kbd class="kbd">z <sub class="sub">ཞ</sub></kbd>
+            <kbd class="kbd">x <sub class="sub">ཟ</sub></kbd>
+            <kbd class="kbd">c <sub class="sub">འ</sub></kbd>
+            <kbd class="kbd">v <sub class="sub">ཡ</sub></kbd>
+            <kbd class="kbd">b <sub class="sub">ར</sub></kbd>
+            <kbd class="kbd">n <sub class="sub">ལ</sub></kbd>
+            <kbd class="kbd">m <sub class="sub">ཤ</sub></kbd>
+            <kbd class="kbd">, <sub class="sub">ས</sub></kbd>
+            <kbd class="kbd">. <sub class="sub">ཧ</sub></kbd>
+            <kbd class="kbd">/ <sub class="sub">ཨ</sub></kbd>
+        </div>
+        
+
+        <!-- Add Bootstrap Modal for exporting text -->
+        <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document"> <!-- Use modal-lg for a larger modal -->
+                <div class="modal-content">
+                    <div class="modal-header bg-green-500 text-white">
+                        <h5 class="modal-title" id="exportModalLabel">Export Text</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-lg">Select the file format for exporting the text:</p>
+                        <select id="exportFormat" class="form-select mt-2">
+                            <option value="txt">Text File (.txt)</option>
+                            <option value="doc">Word Document (.doc)</option>
+                            <option value="pdf">PDF (.pdf)</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="text-red-600 btn btn-danger hover:text-white hover:bg-red-600" data-dismiss="modal">Close</button>
+                        <button type="button" class="text-blue-600  btn btn-primary hover:text-white hover:bg-blue-600" onclick="handleExport()">Export</button>
+                    </div>
+                                                           
+                </div>
+            </div>
+        </div>        
+        <!-- Add Bootstrap JS and Popper.js scripts for certain Bootstrap features -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+
+        // Function to show the export modal
+        function showExportModal() {
+            $('#exportModal').modal('show');
+        }
+
+        // Function to handle the export after the user has selected the format
+        function handleExport() {
+            // Get the selected export format
+            var selectedFormat = $('#exportFormat').val();
+
+            // Get the text from the textarea
+            var textToExport = document.getElementById('text-input').value;
+
+            // Create a new Blob with the text content
+            var blob = new Blob([textToExport], { type: 'text/plain' });
+
+            // Create a link element
+            var link = document.createElement('a');
+
+            // Set the download attribute and the file name based on the selected format
+            link.download = 'exported_text.' + selectedFormat;
+
+            // Create a URL for the Blob and set it as the href attribute
+            link.href = window.URL.createObjectURL(blob);
+
+            // Append the link to the body
+            document.body.appendChild(link);
+
+            // Trigger a click on the link to start the download
+            link.click();
+
+            // Remove the link from the body
+            document.body.removeChild(link);
+
+            // Close the modal after exporting
+            $('#exportModal').modal('hide');
+
+
+        }
+            $(document).ready(function () {
+                $('#exportModal').modal({
+                    show: false
+                });
+                $('.keyboard-section').hide();
+
+                // Bind to the input event on the textarea
+                $('#text-input').on('input', function () {
+                    // Get the value from the textarea
+                    var seedText = $(this).val();
+
+                    // Make an AJAX request to get predictions
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "predict" %}',
+                        data: {
+                            'seed_text': seedText,
+                            'top_n': 20, // Adjust as needed
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                        },
+                        success: function (data) {
+                            console.log(data); // Log the data received from the server
+
+                            // Update the predictions container with the received data
+                            var buttonsHtml = '';
+                            data.predictions.forEach(function (word) {
+                                buttonsHtml += '<button type="button" class="btn btn-secondary prediction-button" style="background-color: black;border-radius: 10px;" onclick="handleButtonClick(\'' + word + '\')">' + word + '</button>';
+                            });
+                            $('#predictions-container').html(buttonsHtml);
+
+                            // Set the width of the predictions-container to match the textarea's width
+                            var editorWidth = $('#text-input').width();
+                            $('#predictions-container').width(editorWidth);
+
+                            // Calculate the maximum number of predictions that can fit within the container
+                            var maxPredictions = Math.floor(editorWidth / 100); // Assuming each button is around 100px wide
+
+                            // Show only the maximum number of predictions
+                            $('#predictions-container .prediction-button:gt(' + (maxPredictions - 1) + ')').hide();
+                        },
+                        error: function () {
+                            console.log('Error in AJAX request');
+                        }
+                    });
+                });
+
+                // Update predictions-container width on window resize
+                $(window).resize(function () {
+                    var editorWidth = $('#text-input').width();
+                    $('#predictions-container').width(editorWidth);
+
+                    // Calculate the maximum number of predictions that can fit within the container
+                    var maxPredictions = Math.floor(editorWidth / 100); // Assuming each button is around 100px wide
+
+                    // Show only the maximum number of predictions
+                    $('#predictions-container .prediction-button:gt(' + (maxPredictions - 1) + ')').hide();
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
