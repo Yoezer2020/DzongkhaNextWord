@@ -22,11 +22,11 @@ def delete_prediction(request, prediction_id):
 
 
 # Load the saved model
-model_path = r"C:\Users\Tenzin Yoezer\dzongkha_nextword\dzo_nextword\model_tokenizer_dataset\Final_GruModel.h5"
+model_path = r"dzo_nextword\model_tokenizer_dataset\Final_GruModel.h5"
 model = load_model(model_path)
 
 # Load the tokenizer
-tokenizer_path = r"C:\Users\Tenzin Yoezer\dzongkha_nextword\dzo_nextword\model_tokenizer_dataset\tokenizer.pkl"  # Update with the actual path
+tokenizer_path = r"dzo_nextword\model_tokenizer_dataset\tokenizer.pkl"  # Update with the actual path
 with open(tokenizer_path, 'rb') as tokenizer_file:
     tokenizer = pickle.load(tokenizer_file)
 
@@ -81,7 +81,7 @@ def predict(request):
 
 def tokenize_text(request):
     # Provide the path to your Excel file
-    excel_file_path = r"C:\Users\Tenzin Yoezer\dzongkha_nextword\dzo_nextword\model_tokenizer_dataset\Dataset5k.xlsx"
+    excel_file_path = r"dzo_nextword\model_tokenizer_dataset\Dataset5k.xlsx"
 
     try:
         # Load the Excel file into a DataFrame
