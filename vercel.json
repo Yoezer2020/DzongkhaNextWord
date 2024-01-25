@@ -1,12 +1,13 @@
 {
-    "builds":[{
-        "src":"dzo_nextword/wsgi.py",
-        "use":"@vercel/python",
-        "config":{"maxLambdaSize":"15mb","runtime":"python3.10"}
-
+    "builds": [{
+        "src": "dzongkha_nextword/wsgi.py",
+        "use": "@vercel/python",
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     }],
-    "routes":[{
-        "src": "/(.*)",
-        "dest": "dzo_nextword/wsgi.py"
-    }]
- }
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "dzongkha_nextword/wsgi.py"
+        }
+    ]
+}

@@ -18,7 +18,8 @@
                 // Append the clicked word to the current content
                 inputElement.val(currentValue + (currentValue ? '་ ' : '') + word);
             }
-    
+             // Save the text in localStorage
+             localStorage.setItem('savedText', inputElement.val());
             // Trigger the input event to update predictions
             inputElement.trigger('input');
         }
@@ -37,9 +38,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     
     <style>
+        .navbar{
+            background-color: #008374;
+        }
         .navlink:hover{
             border-radius: 10px;
             text-decoration-color: #68d391;
+        }
+        .navbutton{
+            background-color: #008374;
         }
         .share-button:hover {
             background-color: #ef4444; /* Red background color on hover */
@@ -90,20 +97,19 @@
             font-size: 35px;
         }
     </style>
-    <nav class="flex items-center justify-between p-4 bg-green-500 text-white">
+    <nav class="navbar flex items-center justify-between p-4 bg-teal-600 text-white">
         <div class="flex items-center space-x-4">
             <img src="{% static 'images/dzologo.png' %}" alt="Icon" class="h-11 w-18">
-            <span class="text-xl font-bold">Dzongkha NextWord</span>
             <a href="home.html" class="navlink text-xl hover:no-underline hover:bg-white hover:text-green-500 hover:border hover:border-green-500 hover:rounded-full hover:h-full p-2">Home</a>
         </div>
         <div class="flex items-center space-x-4">
-            <button class="share-button flex items-center space-x-2 p-2 rounded-lg border border-white focus:outline-none focus:border-white transition transform ">
+            <button class="navbutton share-button flex items-center space-x-2 p-2 rounded-lg border border-white focus:outline-none focus:border-white transition transform ">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
                     <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"/>
                 </svg>
                 <span>Share</span>
             </button>
-            <button onclick="showExportModal()" class="export-button flex items-center space-x-2 p-2 rounded-lg border border-white focus:outline-none focus:border-white transition transform hover:bg-blue-500 bg-green-400">
+            <button onclick="showExportModal()" class="navbutton export-button flex items-center space-x-2 p-2 rounded-lg border border-white focus:outline-none focus:border-white transition transform hover:bg-blue-500 bg-green-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
                     <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
@@ -122,7 +128,9 @@
             {% csrf_token %}
             <div class="form-group">
                 <!-- Use a Bootstrap textarea instead of Quill editor -->
-                <textarea id="text-input" class="form-control text-2xl" rows="5" placeholder="Type here..."></textarea>
+                <textarea id="text-input" class="form-control text-2xl" rows="5" placeholder="Type here...">
+
+                </textarea>
             </div>
         </form>
         
@@ -268,9 +276,17 @@
                     show: false
                 });
                 $('.keyboard-section').hide();
+                  // Retrieve and set the saved text from localStorage
+                    var savedText = localStorage.getItem('savedText');
+                    if (savedText) {
+                        $('#text-input').val(savedText);
+                    }
 
                 // Bind to the input event on the textarea
                 $('#text-input').on('input', function () {
+                     // Save the text in localStorage on input
+                    localStorage.setItem('savedText', $(this).val());
+
                     // Get the value from the textarea
                     var seedText = $(this).val();
 
